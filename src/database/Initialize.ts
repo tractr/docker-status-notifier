@@ -1,5 +1,5 @@
 import { Database } from 'sqlite3';
-import { run } from './sqlite';
+import { run } from './Sqlite';
 
 /**
  * Create the tables in the database.
