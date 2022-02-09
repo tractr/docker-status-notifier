@@ -4,6 +4,7 @@ import { getEnv } from '../helpers';
 import { Slack } from './handlers/Slack';
 import { SMTP } from './handlers/SMTP';
 import { Console } from './handlers/Console';
+import { StatusMessageHandler } from './interfaces';
 
 export * from './interfaces';
 
@@ -68,23 +69,14 @@ function getConsoleHandler(): Console {
 export function getBroadcaster(): Broadcaster {
 	const broadcaster = new Broadcaster();
 
-	// Add Discord handler
-	const discord = getDiscordHandler();
-	if (discord) {
-		broadcaster.addHandler(discord);
-	}
-	// Add Slack handler
-	const slack = getSlackHandler();
-	if (slack) {
-		broadcaster.addHandler(slack);
-	}
-	// Add SMTP handler
-	const smtp = getSMTPHandler();
-	if (smtp) {
-		broadcaster.addHandler(smtp);
-	}
-	// Add Console handler
-	broadcaster.addHandler(getConsoleHandler());
+	// Create handlers and add them to broadcaster
+	const handlers = [
+		getDiscordHandler(),
+		getSlackHandler(),
+		getSMTPHandler(),
+		getConsoleHandler(),
+	].filter((handler) => !!handler) as StatusMessageHandler[];
+	handlers.forEach((handler) => broadcaster.addHandler(handler));
 
 	return broadcaster;
 }
