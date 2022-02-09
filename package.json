@@ -1,0 +1,39 @@
+{
+  "name": "docker-status-notifier",
+  "version": "0.0.0",
+  "description": "Watches containers status and send notifications on failure",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "start": "node dist/index.js",
+    "dev": "npm run build && node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tractr/docker-status-notifier.git"
+  },
+  "keywords": [
+    "docker",
+    "status",
+    "notification",
+    "watcher"
+  ],
+  "author": "Edouard Demotes <edouard@tractr.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tractr/docker-status-notifier/issues"
+  },
+  "homepage": "https://github.com/tractr/docker-status-notifier#readme",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "sqlite3": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/sqlite3": "^3.1.8",
+    "prettier": "^2.5.1",
+    "rimraf": "^3.0.2",
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.5"
+  }
+}
