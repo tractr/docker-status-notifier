@@ -14,7 +14,7 @@ export function requireEnv(name: string): string {
 export function getEnv(
 	name: string,
 	defaultValue?: string
-): string | undefined {
+): string | typeof defaultValue {
 	const value = process.env[name];
 	if (!value) {
 		return defaultValue;

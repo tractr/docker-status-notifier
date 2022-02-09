@@ -3,7 +3,7 @@ export type MessageType = 'failure' | 'stopped';
 export interface StatusMessage {
 	message: string;
 	type: MessageType;
-	log?: string;
+	logs?: string;
 }
 
 export interface StatusMessageHandler {

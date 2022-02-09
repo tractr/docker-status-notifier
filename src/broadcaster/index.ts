@@ -63,20 +63,23 @@ function getConsoleHandler(): Console {
 	return new Console();
 }
 
+let broadcasterSingleton: Broadcaster;
 /**
  * Create broadcaster and its handlers
  */
 export function getBroadcaster(): Broadcaster {
-	const broadcaster = new Broadcaster();
+	if (!broadcasterSingleton) {
+		broadcasterSingleton = new Broadcaster();
 
-	// Create handlers and add them to broadcaster
-	const handlers = [
-		getDiscordHandler(),
-		getSlackHandler(),
-		getSMTPHandler(),
-		getConsoleHandler(),
-	].filter((handler) => !!handler) as StatusMessageHandler[];
-	handlers.forEach((handler) => broadcaster.addHandler(handler));
+		// Create handlers and add them to broadcaster
+		const handlers = [
+			getDiscordHandler(),
+			getSlackHandler(),
+			getSMTPHandler(),
+			getConsoleHandler(),
+		].filter((handler) => !!handler) as StatusMessageHandler[];
+		handlers.forEach((handler) => broadcasterSingleton.addHandler(handler));
+	}
 
-	return broadcaster;
+	return broadcasterSingleton;
 }

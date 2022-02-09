@@ -43,7 +43,7 @@ export class SMTP implements StatusMessageHandler {
 			to: this.options.to,
 			subject: this.options.subject,
 			text: message.message,
-			html: `<span>${message.message}<span><br /><br /><b>${message.log}</b>`,
+			html: `<span>${message.message}<span><br /><br /><b>${message.logs}</b>`,
 		});
 	}
 }
