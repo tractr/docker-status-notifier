@@ -1,4 +1,4 @@
-import { getEnv, log, logError, logWarning } from '../helpers';
+import { getEnvNumber, log, logError, logWarning } from '../helpers';
 import { inspectContainers } from './Inspect';
 import { getBroadcaster, StatusMessage } from '../broadcaster';
 
@@ -32,7 +32,7 @@ export function startWatcher() {
 		return;
 	}
 	log('Start watcher');
-	const intervalTime = 1000 * Number(getEnv('CHECK_INTERVAL', '30'));
+	const intervalTime = 1000 * getEnvNumber('CHECK_INTERVAL', 30);
 	const broadcaster = getBroadcaster();
 	watcherInterval = setInterval(async () => {
 		try {

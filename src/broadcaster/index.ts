@@ -1,6 +1,6 @@
 import { Broadcaster } from './Broadcaster';
 import { Discord } from './handlers/Discord';
-import { getEnv } from '../helpers';
+import { getEnv, getEnvBoolean, getEnvNumber, requireEnv } from '../helpers';
 import { Slack } from './handlers/Slack';
 import { SMTP } from './handlers/SMTP';
 import { Console } from './handlers/Console';
@@ -12,9 +12,10 @@ export * from './interfaces';
  * Creates a new instance of Discord if environment variables are set.
  */
 function getDiscordHandler(): Discord | undefined {
-	const webhook = getEnv('DISCORD_WEBHOOK');
-	const token = getEnv('DISCORD_TOKEN');
-	if (webhook && token) {
+	const enabled = getEnv('DISCORD_ENABLED', '0') === '1';
+	if (enabled) {
+		const webhook = requireEnv('DISCORD_WEBHOOK');
+		const token = requireEnv('DISCORD_TOKEN');
 		return new Discord(token, webhook);
 	}
 }
@@ -23,9 +24,10 @@ function getDiscordHandler(): Discord | undefined {
  * Creates a new instance of Slack if environment variables are set.
  */
 function getSlackHandler(): Slack | undefined {
-	const token = getEnv('SLACK_TOKEN');
-	const channel = getEnv('SLACK_CHANNEL');
-	if (token && channel) {
+	const enabled = getEnv('SLACK_ENABLED', '0') === '1';
+	if (enabled) {
+		const token = requireEnv('SLACK_TOKEN');
+		const channel = requireEnv('SLACK_CHANNEL');
 		return new Slack(token, channel);
 	}
 }
@@ -34,15 +36,16 @@ function getSlackHandler(): Slack | undefined {
  * Creates a new instance of SMTP if environment variables are set.
  */
 function getSMTPHandler(): SMTP | undefined {
-	const host = getEnv('SMTP_HOST');
-	const port = Number(getEnv('SMTP_PORT', '25'));
-	const secure = getEnv('SMTP_SECURE', '0') === '1';
-	const user = getEnv('SMTP_USER');
-	const password = getEnv('SMTP_PASSWORD');
-	const from = getEnv('SMTP_FROM');
-	const to = getEnv('SMTP_TO');
-	const subject = getEnv('SMTP_SUBJECT');
-	if (host && port && from && to && subject) {
+	const enabled = getEnv('SMTP_ENABLED', '0') === '1';
+	if (enabled) {
+		const host = requireEnv('SMTP_HOST');
+		const port = getEnvNumber('SMTP_PORT', 25);
+		const secure = getEnvBoolean('SMTP_SECURE', false);
+		const user = getEnv('SMTP_USER');
+		const password = getEnv('SMTP_PASSWORD');
+		const from = requireEnv('SMTP_FROM');
+		const to = requireEnv('SMTP_TO');
+		const subject = requireEnv('SMTP_SUBJECT');
 		return new SMTP({
 			host,
 			port,
