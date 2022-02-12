@@ -1,7 +1,7 @@
 /**
  * Get current date time in format YYYY-MM-DD HH:mm:ss.SSS for current timezone
  */
-export function getCurrentDateTimeForTimezone() {
+export function getCurrentLocalDateTimeAsString() {
 	const date = new Date();
 	const offset = date.getTimezoneOffset() / 60;
 	const hours = date.getHours();

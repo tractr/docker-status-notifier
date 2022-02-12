@@ -1,7 +1,7 @@
-import { getCurrentDateTimeForTimezone } from './DateTime';
+import { getCurrentLocalDateTimeAsString } from './DateTime';
 
 export function prependDateTime(message: string): string {
-	return `[${getCurrentDateTimeForTimezone()}] ${message}`;
+	return `[${getCurrentLocalDateTimeAsString()}] ${message}`;
 }
 export function logError(error: Error) {
 	console.error(prependDateTime(error.message));
