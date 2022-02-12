@@ -1,5 +1,7 @@
 FROM node:16-alpine
 
+LABEL maintainer="Edouard Demotes<edouard@tractr.net>"
+
 # Add sources
 ADD . /app
 WORKDIR /app
