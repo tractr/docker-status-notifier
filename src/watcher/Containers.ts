@@ -1,11 +1,11 @@
 import { getEnv } from '../helpers';
-import * as http from 'http';
 import { DockerContainer, DockerContainerSummary } from './interfaces';
+import Axios from 'axios';
 
 /**
  * Get the docker socket path.
  */
-function getDockerSocketPath(): string {
+export function getDockerSocketPath(): string {
 	const dockerSocketPath = getEnv('DOCKER_SOCKET', '/var/run/docker.sock');
 	if (!dockerSocketPath) {
 		throw new Error('DOCKER_SOCKET environment variable is not set');
@@ -14,39 +14,25 @@ function getDockerSocketPath(): string {
 }
 
 /**
- * Generic function to get http response
+ * Call the docker API using the given path.
  */
-async function makeHttpRequest(options: http.RequestOptions) {
-	return new Promise<string>((resolve, reject) => {
-		const callback = (res: http.IncomingMessage) => {
-			const chunks: Buffer[] = [];
-			res.setEncoding('utf8');
-			res.on('data', (data) => {
-				chunks.push(data);
-			});
-			res.on('error', (data) => {
-				reject(data);
-			});
-			res.on('end', () => resolve(chunks.join('')));
-		};
-
-		const request = http.request(options, callback);
-		request.on('error', reject);
-		request.end();
+export async function callDockerApi<T>(path: string): Promise<T> {
+	const response = await Axios.get<T>(path, {
+		socketPath: getDockerSocketPath(),
 	});
+	if (response.status < 200 || response.status >= 300) {
+		throw new Error(
+			`Docker API call failed: ${response.status} ${response.statusText}`
+		);
+	}
+	return response.data;
 }
 
 /**
  * Get list of containers using docker socket and http client
  */
-async function getRawDockerContainersList(): Promise<DockerContainer[]> {
-	const options: http.RequestOptions = {
-		socketPath: getDockerSocketPath(),
-		path: '/containers/json?all=1',
-	};
-
-	const json = await makeHttpRequest(options);
-	return JSON.parse(json) as DockerContainer[];
+export function getRawDockerContainersList(): Promise<DockerContainer[]> {
+	return callDockerApi('/containers/json?all=1');
 }
 
 /**
@@ -70,14 +56,11 @@ export async function getDockerContainersList(): Promise<
 /**
  * Get the N last lines of logs for the given container
  */
-export async function getDockerContainerLogs(
+export function getDockerContainerLogs(
 	containerId: string,
 	lines: number
 ): Promise<string> {
-	const options: http.RequestOptions = {
-		socketPath: getDockerSocketPath(),
-		path: `/containers/${containerId}/logs?stdout=1&stderr=1&tail=${lines}`,
-	};
-
-	return await makeHttpRequest(options);
+	return callDockerApi(
+		`/containers/${containerId}/logs?stdout=1&stderr=1&tail=${lines}`
+	);
 }
