@@ -45,10 +45,10 @@ async function updateContainersInDatabase(
 async function createStatusMessageForContainer(
 	container: DockerContainerSummary
 ): Promise<StatusMessage> {
-	// Get amount of lines to fetch from environment variable
-	const lines = Number(getEnv('LOGS_LENGTH', '10'));
+	// Get tail length to fetch from environment variable
+	const tail = Number(getEnv('LOGS_LENGTH', '10'));
 	// Get logs from the container
-	const logs = await getDockerContainerLogs(container.id, lines);
+	const logs = await getDockerContainerLogs(container.id, tail);
 
 	return {
 		message: `Container ${container.name} (image: ${container.image}). State is ${container.state} (${container.status})`,

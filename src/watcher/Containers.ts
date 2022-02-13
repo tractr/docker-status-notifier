@@ -58,9 +58,9 @@ export async function getDockerContainersList(): Promise<
  */
 export function getDockerContainerLogs(
 	containerId: string,
-	lines: number
+	tail: number
 ): Promise<string> {
 	return callDockerApi(
-		`/containers/${containerId}/logs?stdout=1&stderr=1&tail=${lines}`
+		`/containers/${containerId}/logs?stdout=1&stderr=1&tail=${tail}`
 	);
 }
